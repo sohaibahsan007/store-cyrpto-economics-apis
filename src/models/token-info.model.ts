@@ -12,21 +12,18 @@ export class TokenInfo extends BaseEntity {
 
   @property({
     type: 'string',
-    required: true,
   })
-  tokenName: string;
+  tokenName?: string;
 
   @property({
     type: 'string',
-    required: true,
   })
-  tokenSymbol: string;
+  tokenSymbol?: string;
 
   @property({
     type: 'string',
-    required: true,
   })
-  tokenType: string;
+  tokenType?: string;
 
   @property({
     type: 'number',
@@ -37,16 +34,6 @@ export class TokenInfo extends BaseEntity {
     },
   })
   tokenSupply: number;
-
-  @property({
-    type: 'number',
-    required: true,
-    postgresql: {
-      dataType: 'integer',
-      nullable: 'NO'
-    },
-  })
-  tokenPricePerBits: number;
 
   @property({
     type: 'number',

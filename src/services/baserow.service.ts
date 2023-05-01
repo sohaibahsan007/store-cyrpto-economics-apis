@@ -21,7 +21,6 @@ import { BaserowDataSource } from "../datasources";
     Token_Symbol: string;
     Token_Supply: number;
     Token_Type: string;
-    Token_Price_Per_Bits: number;
     Token_Price_Per_USD: string;
   }
 

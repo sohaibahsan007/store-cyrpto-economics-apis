@@ -5,6 +5,7 @@ import { service } from '@loopback/core';
 import { repository } from '@loopback/repository';
 import { TokenInfoRepository } from '../repositories';
 import { BaserowProvider, BaserowService, ResultsEntity, TokenInfo } from './baserow.service';
+import { TokenInfoRelations } from '../models';
 
 
 // baserow service, which will pull data using provider and push into database.
@@ -33,27 +34,32 @@ export class TokenPullService {
   private async pushTokenInfo(tokenInfo: TokenInfo): Promise<void> {
     try {
       tokenInfo?.results?.forEach(async (token: ResultsEntity) => {
-        // check if tokenInfo exists in database
-        let tokenInfoExists = await this.tokenInfoRepository.findOne({
-          where: { tokenId: token?.Token_ID }
-        });
-        // check for emtpy fields in token
-        if (!token?.Token_ID || !token?.Token_Name || !token?.Token_Symbol || !token?.Token_Supply || !token?.Token_Type || !token?.Token_Price_Per_Bits || !token?.Token_Price_Per_USD) return;
 
-        const _tokenInfo = {
-          tokenId: token?.Token_ID,
-          tokenName: token?.Token_Name,
-          tokenSymbol: token?.Token_Symbol,
-          tokenSupply: token?.Token_Supply,
-          tokenType: token?.Token_Type,
-          tokenPricePerBits: token?.Token_Price_Per_Bits,
-          tokenPricePerUSD: parseFloat(token?.Token_Price_Per_USD),
-        };
-        if (tokenInfoExists) {
-          await this.tokenInfoRepository.updateById(tokenInfoExists.id, _tokenInfo);
-        } else {
-          tokenInfoExists = await this.tokenInfoRepository.create(_tokenInfo);
+        // check for emtpy fields in token
+        if (token?.Token_ID && token?.Token_Supply && token?.Token_Price_Per_USD){
+
+          // check if tokenInfo exists in database
+          let tokenInfoExists = await this.tokenInfoRepository.findOne({
+            where: { tokenId: token?.Token_ID }
+          });
+
+          const _tokenInfo: TokenInfoRelations = {
+            tokenId: token?.Token_ID,
+            tokenName: token?.Token_Name,
+            tokenSymbol: token?.Token_Symbol,
+            tokenSupply: token?.Token_Supply,
+            tokenType: token?.Token_Type,
+            tokenPricePerUSD: parseFloat(token?.Token_Price_Per_USD),
+            updatedOn: new Date()
+          };
+          if (tokenInfoExists) {
+            await this.tokenInfoRepository.updateById(tokenInfoExists.id, _tokenInfo);
+          } else {
+            tokenInfoExists = await this.tokenInfoRepository.create(_tokenInfo);
+          }
         }
+
+
       });
     } catch (error) {
       console.error('Push Token Info Error: ', error);

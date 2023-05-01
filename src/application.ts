@@ -9,7 +9,7 @@ import {
 } from '@loopback/rest-explorer';
 import { ServiceMixin } from '@loopback/service-proxy';
 import path from 'path';
-import { TokenInfoPullCronJob } from './cron';
+import { PullDataCronJob } from './cron';
 import { MySequence } from './sequence';
 export { ApplicationConfig };
 
@@ -44,6 +44,6 @@ export class StoreCyrptoEconomicsApisApplication extends BootMixin(
       },
     };
 
-    this.add(createBindingFromClass(TokenInfoPullCronJob));
+    this.add(createBindingFromClass(PullDataCronJob));
   }
 }
