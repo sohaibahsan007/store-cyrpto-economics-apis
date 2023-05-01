@@ -1,22 +1,24 @@
-import {BootMixin} from '@loopback/boot';
-import {ApplicationConfig} from '@loopback/core';
+import { BootMixin } from '@loopback/boot';
+import { ApplicationConfig, createBindingFromClass } from '@loopback/core';
+import { CronComponent } from '@loopback/cron';
+import { RepositoryMixin } from '@loopback/repository';
+import { RestApplication } from '@loopback/rest';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import {RepositoryMixin} from '@loopback/repository';
-import {RestApplication} from '@loopback/rest';
-import {ServiceMixin} from '@loopback/service-proxy';
+import { ServiceMixin } from '@loopback/service-proxy';
 import path from 'path';
-import {MySequence} from './sequence';
-
-export {ApplicationConfig};
+import { TokenInfoPullCronJob } from './cron';
+import { MySequence } from './sequence';
+export { ApplicationConfig };
 
 export class StoreCyrptoEconomicsApisApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),
 ) {
   constructor(options: ApplicationConfig = {}) {
     super(options);
+
 
     // Set up the custom sequence
     this.sequence(MySequence);
@@ -29,6 +31,7 @@ export class StoreCyrptoEconomicsApisApplication extends BootMixin(
       path: '/explorer',
     });
     this.component(RestExplorerComponent);
+    this.component(CronComponent);
 
     this.projectRoot = __dirname;
     // Customize @loopback/boot Booter Conventions here
@@ -40,5 +43,7 @@ export class StoreCyrptoEconomicsApisApplication extends BootMixin(
         nested: true,
       },
     };
+
+    this.add(createBindingFromClass(TokenInfoPullCronJob));
   }
 }

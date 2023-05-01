@@ -1,4 +1,4 @@
-import {StoreCyrptoEconomicsApisApplication} from './application';
+import { StoreCyrptoEconomicsApisApplication } from './application';
 
 export async function migrate(args: string[]) {
   const existingSchema = args.includes('--rebuild') ? 'drop' : 'alter';

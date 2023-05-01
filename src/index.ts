@@ -1,12 +1,9 @@
-import {ApplicationConfig, StoreCyrptoEconomicsApisApplication} from './application';
-import * as dotenv from 'dotenv';
+import { ApplicationConfig, StoreCyrptoEconomicsApisApplication } from './application';
 
 export * from './application';
 
-export async function main(options: ApplicationConfig = {}) {
 
-  // init dotenv
-  dotenv.config();
+export async function main(options: ApplicationConfig = {}) {
 
   const app = new StoreCyrptoEconomicsApisApplication(options);
   await app.boot();
@@ -20,6 +17,7 @@ export async function main(options: ApplicationConfig = {}) {
 }
 
 if (require.main === module) {
+
   // Run the application
   const config = {
     rest: {
@@ -37,6 +35,8 @@ if (require.main === module) {
       },
     },
   };
+
+
   main(config).catch(err => {
     console.error('Cannot start the application.', err);
     process.exit(1);
