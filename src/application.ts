@@ -1,17 +1,17 @@
-import { BootMixin } from '@loopback/boot';
-import { ApplicationConfig, createBindingFromClass } from '@loopback/core';
-import { CronComponent } from '@loopback/cron';
-import { RepositoryMixin } from '@loopback/repository';
-import { RestApplication } from '@loopback/rest';
+import {BootMixin} from '@loopback/boot';
+import {ApplicationConfig, createBindingFromClass} from '@loopback/core';
+import {CronComponent} from '@loopback/cron';
+import {RepositoryMixin} from '@loopback/repository';
+import {RestApplication} from '@loopback/rest';
 import {
   RestExplorerBindings,
   RestExplorerComponent,
 } from '@loopback/rest-explorer';
-import { ServiceMixin } from '@loopback/service-proxy';
+import {ServiceMixin} from '@loopback/service-proxy';
 import path from 'path';
-import { PullDataCronJob } from './cron';
-import { MySequence } from './sequence';
-export { ApplicationConfig };
+import {PullDataCronJob} from './cron';
+import {MySequence} from './sequence';
+export {ApplicationConfig};
 
 export class StoreCyrptoEconomicsApisApplication extends BootMixin(
   ServiceMixin(RepositoryMixin(RestApplication)),

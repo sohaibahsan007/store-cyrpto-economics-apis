@@ -1,16 +1,16 @@
-import { repository } from "@loopback/repository";
-import { HttpErrors } from "@loopback/rest";
-import { TokenInfo } from "../models";
-import { CryptoPricesRepository, TokenInfoRepository } from "../repositories";
-import { CurrencyUnit } from "../enum";
+import {repository} from "@loopback/repository";
+import {HttpErrors} from "@loopback/rest";
+import {CurrencyUnit} from "../enum";
+import {TokenInfo} from "../models";
+import {CryptoPricesRepository, TokenInfoRepository} from "../repositories";
 
-export interface ITokenInfo{
+export interface ITokenInfo {
   supply: number;
   marketCap: ITokenPrice;
   price: ITokenPrice
 }
 
-export interface ITokenPrice{
+export interface ITokenPrice {
   usd: number;
   bitcoin: number;
   ethereum: number;
@@ -26,7 +26,7 @@ export class TokenInfoService {
   ) {
   }
 
-  async getTokenInfo(tokenId: string): Promise<ITokenInfo>{
+  async getTokenInfo(tokenId: string): Promise<ITokenInfo> {
 
     const {tokenSupply, tokenPricePerUSD} = await this.getTokenById(tokenId);
 
@@ -49,44 +49,44 @@ export class TokenInfoService {
     }
 
   }
-  async getTokenSupply(tokenId: string): Promise<number>{
+  async getTokenSupply(tokenId: string): Promise<number> {
     const {tokenSupply} = await this.getTokenById(tokenId);
     return tokenSupply;
   }
-  async getTokenMarketCap(tokenId: string,unit: CurrencyUnit): Promise<number>{
-    const {tokenSupply,tokenPricePerUSD} = await this.getTokenById(tokenId);
-    return this.getPriceByUnit((tokenSupply * tokenPricePerUSD),unit);
+  async getTokenMarketCap(tokenId: string, unit: CurrencyUnit): Promise<number> {
+    const {tokenSupply, tokenPricePerUSD} = await this.getTokenById(tokenId);
+    return this.getPriceByUnit((tokenSupply * tokenPricePerUSD), unit);
   }
-  async getTokenPrice(tokenId: string,unit: CurrencyUnit): Promise<number>{
+  async getTokenPrice(tokenId: string, unit: CurrencyUnit): Promise<number> {
     const {tokenPricePerUSD} = await this.getTokenById(tokenId);
-    return this.getPriceByUnit(tokenPricePerUSD,unit);
+    return this.getPriceByUnit(tokenPricePerUSD, unit);
   }
 
   // get crypto token price from crypto prices table
-  private async getCryptoTokenPrice(tokenId: string): Promise<number>{
+  private async getCryptoTokenPrice(tokenId: string): Promise<number> {
     const tokenInfo = await this.cryptoPricesRepository.findOne({
-      where: { tokenId }
+      where: {tokenId}
     });
     return tokenInfo?.tokenPricePerUSD ?? 0;
   }
 
-  private async getPriceByUnit(basePriceUSD: number, unit: CurrencyUnit){
+  private async getPriceByUnit(basePriceUSD: number, unit: CurrencyUnit) {
     switch (unit) {
       case CurrencyUnit.USD:
-      return basePriceUSD;
+        return basePriceUSD;
       default:
         return this.convertTokenPrice(basePriceUSD, await this.getCryptoTokenPrice(unit));
     }
   }
   // convert token price to other crypto price using base value, which can convert $STORE to eth or btc.
-  private convertTokenPrice(basePrice: number, toConvertIntoPrice: number): number{
+  private convertTokenPrice(basePrice: number, toConvertIntoPrice: number): number {
     return (basePrice / toConvertIntoPrice) || 0;
   }
 
   // get token info from token info table
-  private async getTokenById(tokenId: string): Promise<TokenInfo>{
+  private async getTokenById(tokenId: string): Promise<TokenInfo> {
     const tokenInfo = await this.tokenInfoRepository.findOne({
-      where: { tokenId }
+      where: {tokenId}
     });
 
     if (!tokenInfo) {

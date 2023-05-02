@@ -1,6 +1,6 @@
 import {inject, lifeCycleObserver, LifeCycleObserver} from '@loopback/core';
 import {juggler} from '@loopback/repository';
-import { environment } from '../environments';
+import {environment} from '../environments';
 
 const baseUrl = `${environment.COINGECKO_BASE_URL}`;
 

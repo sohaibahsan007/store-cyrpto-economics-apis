@@ -1,19 +1,18 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-import { service } from '@loopback/core';
+import {service} from '@loopback/core';
 import {
   get,
   param,
   response
 } from '@loopback/rest';
-import { environment } from '../environments';
-import { ITokenInfo, TokenInfoService } from '../services';
-import { CurrencyUnit } from '../enum';
+import {CurrencyUnit} from '../enum';
+import {environment} from '../environments';
+import {ITokenInfo, TokenInfoService} from '../services';
 
 export class TokenInfoController {
   constructor(
     @service(TokenInfoService)
-    public tokenInfoService : TokenInfoService,
-  ) {}
+    public tokenInfoService: TokenInfoService,
+  ) { }
 
   @get('/token/$store/info')
   @response(200, {
@@ -66,7 +65,7 @@ export class TokenInfoController {
     return this.tokenInfoService.getTokenSupply(environment.DEFAULT_TOKEN_SYMBOL);
   }
 
-  @get('/token/$store/price/{unit}',{
+  @get('/token/$store/price/{unit}', {
     description: 'Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit',
     responses: {},
   })
@@ -84,10 +83,10 @@ export class TokenInfoController {
   async getTokenPrice(
     @param.path.string('unit') unit: CurrencyUnit,
   ): Promise<number> {
-    return this.tokenInfoService.getTokenPrice(environment.DEFAULT_TOKEN_SYMBOL,unit);
+    return this.tokenInfoService.getTokenPrice(environment.DEFAULT_TOKEN_SYMBOL, unit);
   }
 
-  @get('/token/$store/market_cap/{unit}',{
+  @get('/token/$store/market_cap/{unit}', {
     description: 'Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit',
     responses: {},
   })
@@ -105,7 +104,7 @@ export class TokenInfoController {
   async getTokenMarketCap(
     @param.path.string('unit') unit: CurrencyUnit,
   ): Promise<number> {
-    return this.tokenInfoService.getTokenMarketCap(environment.DEFAULT_TOKEN_SYMBOL,unit);
+    return this.tokenInfoService.getTokenMarketCap(environment.DEFAULT_TOKEN_SYMBOL, unit);
   }
 
 }

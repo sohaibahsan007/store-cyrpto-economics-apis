@@ -1,4 +1,4 @@
-import { ApplicationConfig, StoreCyrptoEconomicsApisApplication } from './application';
+import {ApplicationConfig, StoreCyrptoEconomicsApisApplication} from './application';
 
 export * from './application';
 

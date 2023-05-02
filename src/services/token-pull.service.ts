@@ -1,11 +1,11 @@
 /* eslint-disable @typescript-eslint/naming-convention */
 /* eslint-disable @typescript-eslint/no-misused-promises */
 
-import { service } from '@loopback/core';
-import { repository } from '@loopback/repository';
-import { TokenInfoRepository } from '../repositories';
-import { BaserowProvider, BaserowService, ResultsEntity, TokenInfo } from './baserow.service';
-import { TokenInfoRelations } from '../models';
+import {service} from '@loopback/core';
+import {repository} from '@loopback/repository';
+import {TokenInfoRelations} from '../models';
+import {TokenInfoRepository} from '../repositories';
+import {BaserowProvider, BaserowService, ResultsEntity, TokenInfo} from './baserow.service';
 
 
 // baserow service, which will pull data using provider and push into database.
@@ -17,30 +17,33 @@ export class TokenPullService {
     @service(BaserowProvider)
     private baserowProviderService: BaserowService,
   ) {
-
   }
 
-  async pullTokenInfo(): Promise<void> {
-
+  // pull token info from baserow datasource
+  async pullTokenInfo(): Promise<TokenInfo | undefined> {
     try {
       // pull token info from baserow
       const tokenInfo = await this.baserowProviderService.getTokenInfo();
       await this.pushTokenInfo(tokenInfo);
+      return tokenInfo;
     } catch (error) {
       console.error('Pull Token Info Error: ', error);
+      return undefined;
     }
   }
 
+
+  // push token info into database
   private async pushTokenInfo(tokenInfo: TokenInfo): Promise<void> {
     try {
       tokenInfo?.results?.forEach(async (token: ResultsEntity) => {
 
         // check for emtpy fields in token
-        if (token?.Token_ID && token?.Token_Supply && token?.Token_Price_Per_USD){
+        if (token?.Token_ID && token?.Token_Supply && token?.Token_Price_Per_USD) {
 
           // check if tokenInfo exists in database
           let tokenInfoExists = await this.tokenInfoRepository.findOne({
-            where: { tokenId: token?.Token_ID }
+            where: {tokenId: token?.Token_ID}
           });
 
           const _tokenInfo: TokenInfoRelations = {

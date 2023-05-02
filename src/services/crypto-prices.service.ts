@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/naming-convention */
 import { Provider, inject } from "@loopback/core";
 import { getService } from "@loopback/service-proxy";
 import { CryptoPricesDataSource } from "../datasources";

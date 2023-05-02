@@ -1,8 +1,7 @@
 /* eslint-disable @typescript-eslint/no-misused-promises */
-/* eslint-disable no-void */
-import { service } from '@loopback/core';
-import { cronJob, CronJob } from '@loopback/cron';
-import { CryptoPricesPullService, TokenPullService } from '../services';
+import {service} from '@loopback/core';
+import {cronJob, CronJob} from '@loopback/cron';
+import {CryptoPricesPullService, TokenPullService} from '../services';
 
 @cronJob()
 export class PullDataCronJob extends CronJob {
