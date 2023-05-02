@@ -18,6 +18,34 @@ To only install resolved dependencies in `package-lock.json`:
 npm ci
 ```
 
+## Setup environment variable
+
+Before you can run the API, you need to set the variables which includes db, baserow and coingecko env values. You can find the `environment.ts` under `src/environments/environment.ts`.
+
+Test variables:
+
+```
+  NODE_ENV: "DEV",
+  DB_HOST: "",
+  DB_PORT: "",
+  DB_USER: "",
+  DB_PASSWORD: "",
+  DB_NAME: "",
+  DB_URL: "",
+  BASEROW_TOKEN: "",
+  BASEROW_BASE_URL: "",
+  BASEROW_TOKEN_INFO_TABLE: "",
+  COINGECKO_BASE_URL: "",
+  DEFAULT_TOKEN_SYMBOL: "",
+```
+
+
+## Baserow Setup.
+
+I have used `https://baserow.oracle.storecloud.org/database/123/table/469` table for this test. You can use it as well, just copy the token and API URL and set them in `src/environments/environment.ts` file.
+
+
+
 ## Run the application
 
 ```sh
@@ -27,6 +55,18 @@ npm start
 You can also run `node .` to skip the build step.
 
 Open http://127.0.0.1:3000 in your browser.
+
+## Supported endpoints:
+
+* Refresh/Pull Crypto Prices from Coingecko `/refresh/crypto-prices`
+* Refresh/Pull Token Info from Baserow table `/refresh/token-info`
+* Get $STORE Token Info `/token/$store/info`
+* Get $STORE Token Market Cap `/token/$store/market_cap/{unit}`. Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit
+* Get $STORE Token Price `/token/$store/price/{unit}`. Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit
+* Get $STORE Token Supply `/token/$store/supply`
+
+You can check available endpoints by opening http://localhost:3000/explorer/ as well. Where you can test the endpoints.
+
 
 ## Rebuild the project
 
@@ -67,9 +107,3 @@ npm run lint:fix
 npm test
 ```
 
-## What's next
-
-Please check out [LoopBack 4 documentation](https://loopback.io/doc/en/lb4/) to
-understand how you can continue to add features to this application.
-
-[![LoopBack](<https://github.com/loopbackio/loopback-next/raw/master/docs/site/imgs/branding/Powered-by-LoopBack-Badge-(blue)-@2x.png>)](http://loopback.io/)
