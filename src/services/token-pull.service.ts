@@ -1,28 +1,22 @@
-/* eslint-disable @typescript-eslint/naming-convention */
-/* eslint-disable @typescript-eslint/no-misused-promises */
-
 import {service} from '@loopback/core';
 import {repository} from '@loopback/repository';
-import {TokenInfoRelations} from '../models';
+import {TokenInfoWithRelations} from '../models';
 import {TokenInfoRepository} from '../repositories';
 import {BaserowProvider, BaserowService, ResultsEntity, TokenInfo} from './baserow.service';
 
-
-// baserow service, which will pull data using provider and push into database.
+// Baserow service, which will pull data using provider and push into database.
 export class TokenPullService {
-
   constructor(
     @repository(TokenInfoRepository)
-    private tokenInfoRepository: TokenInfoRepository,
+    private readonly tokenInfoRepository: TokenInfoRepository,
     @service(BaserowProvider)
-    private baserowProviderService: BaserowService,
-  ) {
-  }
+    private readonly baserowProviderService: BaserowService,
+  ) { }
 
-  // pull token info from baserow datasource
+  // Pull token info from Baserow datasource
   async pullTokenInfo(): Promise<TokenInfo | undefined> {
     try {
-      // pull token info from baserow
+      // Pull token info from Baserow
       const tokenInfo = await this.baserowProviderService.getTokenInfo();
       await this.pushTokenInfo(tokenInfo);
       return tokenInfo;
@@ -32,43 +26,38 @@ export class TokenPullService {
     }
   }
 
-
-  // push token info into database
+  // Push token info into database
   private async pushTokenInfo(tokenInfo: TokenInfo): Promise<void> {
-    try {
-      tokenInfo?.results?.forEach(async (token: ResultsEntity) => {
-
-        // check for emtpy fields in token
-        if (token?.Token_ID && token?.Token_Supply && token?.Token_Price_Per_USD) {
-
-          // check if tokenInfo exists in database
-          let tokenInfoExists = await this.tokenInfoRepository.findOne({
-            where: {tokenId: token?.Token_ID}
+    const tokensToUpdate: TokenInfoWithRelations[] = [];
+    tokenInfo?.results?.forEach((token: ResultsEntity) => {
+      // Check for empty fields in token
+      if (token?.Token_ID && token?.Token_Supply && token?.Token_Price_Per_USD) {
+        tokensToUpdate.push({
+          tokenId: token.Token_ID,
+          tokenName: token.Token_Name,
+          tokenSymbol: token.Token_Symbol,
+          tokenSupply: token.Token_Supply,
+          tokenType: token.Token_Type,
+          tokenPricePerUSD: parseFloat(token.Token_Price_Per_USD),
+          updatedOn: new Date(),
+        } as TokenInfoWithRelations);
+      }
+    });
+    await Promise.all(
+      tokensToUpdate.map(async (token) => {
+        try {
+          const tokenInfoExists = await this.tokenInfoRepository.findOne({
+            where: {tokenId: token.tokenId},
           });
-
-          const _tokenInfo: TokenInfoRelations = {
-            tokenId: token?.Token_ID,
-            tokenName: token?.Token_Name,
-            tokenSymbol: token?.Token_Symbol,
-            tokenSupply: token?.Token_Supply,
-            tokenType: token?.Token_Type,
-            tokenPricePerUSD: parseFloat(token?.Token_Price_Per_USD),
-            updatedOn: new Date()
-          };
           if (tokenInfoExists) {
-            await this.tokenInfoRepository.updateById(tokenInfoExists.id, _tokenInfo);
+            await this.tokenInfoRepository.updateById(tokenInfoExists.id, token);
           } else {
-            tokenInfoExists = await this.tokenInfoRepository.create(_tokenInfo);
+            await this.tokenInfoRepository.create(token);
           }
+        } catch (error) {
+          console.error('Push Token Info Error: ', error);
         }
-
-
-      });
-    } catch (error) {
-      console.error('Push Token Info Error: ', error);
-    }
-
+      })
+    );
   }
-
-
 }

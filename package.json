@@ -25,7 +25,7 @@
     "coverage": "open coverage/index.html",
     "coverage:ci": "lb-nyc report --reporter=text-lcov | coveralls",
     "pretest": "npm run rebuild",
-    "test": "lb-mocha --allow-console-logs \"dist/__tests__\"",
+    "test": "lb-mocha --allow-console-logs \"dist/__tests__\" --timeout 10000",
     "test:ci": "lb-nyc npm run test --scripts-prepend-node-path",
     "posttest": "npm run lint",
     "test:dev": "lb-mocha --allow-console-logs dist/__tests__/**/*.js && npm run posttest",

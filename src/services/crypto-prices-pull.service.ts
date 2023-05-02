@@ -1,9 +1,10 @@
-/* eslint-disable @typescript-eslint/no-explicit-any */
-
 import {service} from '@loopback/core';
 import {repository} from '@loopback/repository';
+import {HttpErrors} from '@loopback/rest';
 import {CryptoPricesRepository} from '../repositories';
-import {CryptoPricesProvider, CryptoPricesService} from './crypto-prices.service';
+import {CryptoPricesProvider, CryptoPricesService, ICryptoPrices} from './crypto-prices.service';
+
+
 
 
 // baserow service, which will pull data using provider and push into database.
@@ -28,37 +29,39 @@ export class CryptoPricesPullService {
 
     } catch (error) {
       console.error('Pull CryptoPrices Info Error: ', error);
-      return undefined;
+      throw new HttpErrors.InternalServerError('Pull CryptoPrices Info Error: ' + error);
     }
   }
 
-  private async parseCryptoPrices(cyrptoPrices: object): Promise<void> {
+  private async parseCryptoPrices(cyrptoPrices: ICryptoPrices): Promise<void> {
     try {
-      const {bitcoin, ethereum} = cyrptoPrices as any;
-      // push bitcoin and ethereum prices into database
-      await this.pushCryptoPrices('bitcoin', bitcoin.usd ?? 1);
 
-      await this.pushCryptoPrices('ethereum', ethereum.usd ?? 1);
+      const {bitcoin = {usd: 1}, ethereum = {usd: 1}} = cyrptoPrices;
+
+      // push bitcoin and ethereum prices into database
+      await this.saveCryptoPricesToDatabase('bitcoin', bitcoin.usd ?? 1);
+      await this.saveCryptoPricesToDatabase('ethereum', ethereum.usd ?? 1);
     } catch (error) {
       console.error('Push CryptoPrices Info Error: ', error);
+      throw new HttpErrors.InternalServerError('Push CryptoPrices Info Error: ' + error,);
     }
 
   }
 
-  private async pushCryptoPrices(tokenId: string, price: number) {
+  private async saveCryptoPricesToDatabase(tokenId: string, price: number) {
     try {
       // check if tokenInfo exists in database
-      let tokenInfoExists = await this.cryptoPricesRepository.findOne({
+      let existingTokenInfo = await this.cryptoPricesRepository.findOne({
         where: {tokenId}
       });
-      if (tokenInfoExists) {
-        await this.cryptoPricesRepository.updateById(tokenInfoExists.id, {
+      if (existingTokenInfo) {
+        await this.cryptoPricesRepository.updateById(existingTokenInfo.id, {
           tokenId,
           tokenPricePerUSD: price,
           updatedOn: new Date()
         });
       } else {
-        tokenInfoExists = await this.cryptoPricesRepository.create({
+        existingTokenInfo = await this.cryptoPricesRepository.create({
           tokenId,
           tokenPricePerUSD: price,
         });

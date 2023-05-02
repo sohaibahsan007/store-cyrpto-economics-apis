@@ -39,12 +39,9 @@ Test variables:
   DEFAULT_TOKEN_SYMBOL: "",
 ```
 
-
 ## Baserow Setup.
 
 I have used `https://baserow.oracle.storecloud.org/database/123/table/469` table for this test. You can use it as well, just copy the token and API URL and set them in `src/environments/environment.ts` file.
-
-
 
 ## Run the application
 
@@ -58,15 +55,18 @@ Open http://127.0.0.1:3000 in your browser.
 
 ## Supported endpoints:
 
-* Refresh/Pull Crypto Prices from Coingecko `/refresh/crypto-prices`
-* Refresh/Pull Token Info from Baserow table `/refresh/token-info`
-* Get $STORE Token Info `/token/$store/info`
-* Get $STORE Token Market Cap `/token/$store/market_cap/{unit}`. Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit
-* Get $STORE Token Price `/token/$store/price/{unit}`. Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit
-* Get $STORE Token Supply `/token/$store/supply`
+- Refresh/Pull Crypto Prices from Coingecko `/refresh/crypto-prices`.
+- Refresh/Pull Token Info from Baserow table `/refresh/token-info`.
+- Get $STORE Token Info `/token/$store/info`.
+- Get $STORE Token Market Cap `/token/$store/market_cap/{unit}`. Get $STORE Token Price in USD, BTC, or ETH.
+- Get $STORE Token Price `/token/$store/price/{unit}`. Get $STORE Token Price in USD, BTC, or ETH.
+- Get $STORE Token Supply `/token/$store/supply`.
 
 You can check available endpoints by opening http://localhost:3000/explorer/ as well. Where you can test the endpoints.
 
+## Data schedule job for Token Info and Crypto prices:
+
+This api contains a cron job, which will run every minute to fetch new data and update the db. You can manually call these via Refresh endpoints as well.
 
 ## Rebuild the project
 
@@ -106,4 +106,3 @@ npm run lint:fix
 ```sh
 npm test
 ```
-

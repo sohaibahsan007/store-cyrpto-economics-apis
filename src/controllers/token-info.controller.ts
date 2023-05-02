@@ -66,7 +66,7 @@ export class TokenInfoController {
   }
 
   @get('/token/$store/price/{unit}', {
-    description: 'Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit',
+    description: 'Get $STORE Token Price in USD, BTC, or ETH',
     responses: {},
   })
   @response(200, {
@@ -81,13 +81,16 @@ export class TokenInfoController {
     },
   })
   async getTokenPrice(
-    @param.path.string('unit') unit: CurrencyUnit,
+    @param.path.string('unit', {
+      description: 'Currency unit to get market cap in (usd, btc, eth)',
+      default: CurrencyUnit.USD
+    }) unit: CurrencyUnit,
   ): Promise<number> {
     return this.tokenInfoService.getTokenPrice(environment.DEFAULT_TOKEN_SYMBOL, unit);
   }
 
   @get('/token/$store/market_cap/{unit}', {
-    description: 'Pass unit as usd, bitcoin or ethereum to get $STORE token market cap in that unit',
+    description: 'Get $STORE Token Price in USD, BTC, or ETH',
     responses: {},
   })
   @response(200, {
@@ -102,7 +105,10 @@ export class TokenInfoController {
     },
   })
   async getTokenMarketCap(
-    @param.path.string('unit') unit: CurrencyUnit,
+    @param.path.string('unit', {
+      description: 'Currency unit to get market cap in (usd, btc, eth)',
+      default: CurrencyUnit.USD
+    }) unit: CurrencyUnit,
   ): Promise<number> {
     return this.tokenInfoService.getTokenMarketCap(environment.DEFAULT_TOKEN_SYMBOL, unit);
   }

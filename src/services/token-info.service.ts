@@ -70,7 +70,7 @@ export class TokenInfoService {
     return tokenInfo?.tokenPricePerUSD ?? 0;
   }
 
-  private async getPriceByUnit(basePriceUSD: number, unit: CurrencyUnit) {
+  private async getPriceByUnit(basePriceUSD: number, unit: CurrencyUnit): Promise<number> {
     switch (unit) {
       case CurrencyUnit.USD:
         return basePriceUSD;
@@ -80,7 +80,7 @@ export class TokenInfoService {
   }
   // convert token price to other crypto price using base value, which can convert $STORE to eth or btc.
   private convertTokenPrice(basePrice: number, toConvertIntoPrice: number): number {
-    return (basePrice / toConvertIntoPrice) || 0;
+    return (basePrice / toConvertIntoPrice) ?? 0;
   }
 
   // get token info from token info table
