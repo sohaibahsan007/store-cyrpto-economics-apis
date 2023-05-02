@@ -68,6 +68,10 @@ Open http://127.0.0.1:3000 in your browser.
 You can check available endpoints by opening http://localhost:3000/explorer/ as well. Where you can test the endpoints.
 
 
+## Data schedule job for Token Info and Crypto prices:
+
+This api contains a cron job, which will run every minute to fetch new data and update the db. You can manually call these via Refresh endpoints as well.
+
 ## Rebuild the project
 
 To incrementally build the project:
